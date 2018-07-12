@@ -39,15 +39,21 @@ function shuffle(array) {
 
 let cards=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
 
+deck=document.querySelector('.deck');
+
 function populateCards() {
+	deck.innerHTML="";
 	cards=shuffle(cards.concat(cards));
-	deck=document.querySelector('.deck');
 	for(let i=0;i<cards.length;i++){
-		card=document.createElement('li');
-		card.setAttribute('class','card open show');
-		icon=document.createElement('i');
-		icon.setAttribute('class','fa '+cards[i]);
-		card.append(icon);
-		deck.append(card);
+		deck.innerHTML+=`<li class="card"><i class="fa ${cards[i]}"></i></li>`;
 	}
 }
+
+deck.addEventListener('click', function(evt){
+	console.log(evt.target);
+	evt.target.classList.toggle('open');
+})
+
+document.addEventListener('DOMContentLoaded',function(){
+	populateCards();
+})
