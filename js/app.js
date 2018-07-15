@@ -84,6 +84,19 @@ function incrementMoves(){
 	let moves=parseInt(moveSpan.textContent);
 	moves++;
 	moveSpan.textContent=moves.toString();
+	return moves;
+}
+
+function removeStar(moves){
+	stars=document.querySelector('.stars');
+	let i=0;
+	if(moves==10)
+		i=2;
+	else if(moves==15)
+		i=1;
+	else if(moves==25)
+		i=0;
+	stars.children[i].style.color='white';
 }
 
 deck.addEventListener('click', function(evt){
@@ -95,7 +108,9 @@ deck.addEventListener('click', function(evt){
 				setTimeout(matched,800);
 			else
 				setTimeout(notMatched,1000);
-			incrementMoves();
+			let moves=incrementMoves();
+			if(moves==14||moves==20||moves==30)
+				removeStar(moves);
 		}
 	}
 })
