@@ -37,22 +37,70 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-let cards=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
+let cardsList=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
+let activeCards=[];
 
 deck=document.querySelector('.deck');
 
 function populateCards() {
 	deck.innerHTML="";
-	cards=shuffle(cards.concat(cards));
-	for(let i=0;i<cards.length;i++){
-		deck.innerHTML+=`<li class="card"><i class="fa ${cards[i]}"></i></li>`;
+	cardsList=shuffle(cardsList.concat(cardsList));
+	for(let i=0;i<cardsList.length;i++){
+		deck.innerHTML+=`<li class="card"><i class="fa ${cardsList[i]}"></i></li>`;
 	}
 }
 
+function displayCard(evt){
+	evt.target.classList.add('open');
+}
+
+function appendToOpenCard(evt){	
+	activeCards.push(evt.target.firstChild.classList[1]);
+}
+
+function matched(){
+	cards=document.querySelectorAll('.card');
+	for(let card of cards){
+		icon = card.firstChild;
+		if(icon.classList.contains(activeCards[0]))
+			card.classList.add('match');
+	}
+	activeCards=[];
+}
+
+function notMatched(){
+	cards=document.querySelectorAll('.card');
+	for(let card of cards){
+		icon = card.firstChild;
+		if(icon.classList.contains(activeCards[0])||icon.classList.contains(activeCards[1])){
+			card.classList.remove('open');
+		}
+	}
+	activeCards=[];
+}
+
+function incrementMoves(){
+	moveSpan=document.querySelector('.moves');
+	let moves=parseInt(moveSpan.textContent);
+	moves++;
+	moveSpan.textContent=moves.toString();
+}
+
 deck.addEventListener('click', function(evt){
-	console.log(evt.target);
-	evt.target.classList.toggle('open');
+	if(evt.target.classList.contains('card')){
+		displayCard(evt);
+		appendToOpenCard(evt);
+		if(activeCards.length==2){
+			if(activeCards[0]==activeCards[1])
+				setTimeout(matched,800);
+			else
+				setTimeout(notMatched,1000);
+			incrementMoves();
+		}
+	}
 })
+
+
 
 document.addEventListener('DOMContentLoaded',function(){
 	populateCards();
