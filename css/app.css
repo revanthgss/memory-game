@@ -81,6 +81,11 @@ h1 {
     background: #02ccba;
 }
 
+.deck .card.not-match {
+    cursor: default;
+    background: red;
+}
+
 /*
  * Styles for the Score Panel
  */

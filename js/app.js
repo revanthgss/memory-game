@@ -44,7 +44,7 @@ deck=document.querySelector('.deck');
 
 function refresh() {
 	stars=document.querySelector('.stars');
-	for(star of stars.children){
+	for(let star of stars.children){
 		star.style.color='black';
 	}
 	document.querySelector('.moves').textContent='0';
@@ -76,9 +76,12 @@ function matched(){
 function notMatched(){
 	cards=document.querySelectorAll('.card');
 	for(let card of cards){
-		icon = card.firstChild;
-		if(icon.classList.contains(activeCards[0])||icon.classList.contains(activeCards[1])){
-			card.classList.remove('open');
+		if(card.classList.contains('open')&&(card.firstChild.classList.contains(activeCards[0])||card.firstChild.classList.contains(activeCards[1]))){
+			card.classList.add('not-match');
+			setTimeout(function(){
+				card.classList.remove('open');
+				card.classList.remove('not-match');
+			},300)
 		}
 	}
 	activeCards=[];
