@@ -100,14 +100,14 @@ function removeStar(moves){
 }
 
 deck.addEventListener('click', function(evt){
-	if(evt.target.classList.contains('card')){
+	if(evt.target.classList.contains('card')&&!evt.target.classList.contains('open')){
 		displayCard(evt);
 		appendToOpenCard(evt);
 		if(activeCards.length==2){
 			if(activeCards[0]==activeCards[1])
-				setTimeout(matched,800);
+				setTimeout(matched,500);
 			else
-				setTimeout(notMatched,1000);
+				setTimeout(notMatched,500);
 			let moves=incrementMoves();
 			if(moves==14||moves==20||moves==30)
 				removeStar(moves);
