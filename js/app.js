@@ -37,14 +37,19 @@ function shuffle(array) {
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
 
-let cardsList=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
+let cardNames=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
 let activeCards=[];
 
 deck=document.querySelector('.deck');
 
-function populateCards() {
+function refresh() {
+	stars=document.querySelector('.stars');
+	for(star of stars.children){
+		star.style.color='black';
+	}
+	document.querySelector('.moves').textContent='0';
 	deck.innerHTML="";
-	cardsList=shuffle(cardsList.concat(cardsList));
+	cardsList=shuffle(cardNames.concat(cardNames));
 	for(let i=0;i<cardsList.length;i++){
 		deck.innerHTML+=`<li class="card"><i class="fa ${cardsList[i]}"></i></li>`;
 	}
@@ -90,11 +95,11 @@ function incrementMoves(){
 function removeStar(moves){
 	stars=document.querySelector('.stars');
 	let i=0;
-	if(moves==10)
+	if(moves==14)
 		i=2;
-	else if(moves==15)
+	else if(moves==20)
 		i=1;
-	else if(moves==25)
+	else if(moves==30)
 		i=0;
 	stars.children[i].style.color='white';
 }
@@ -115,8 +120,12 @@ deck.addEventListener('click', function(evt){
 	}
 })
 
+restartbtn=document.querySelector('.restart');
+
+restartbtn.addEventListener('click',refresh)
+
 
 
 document.addEventListener('DOMContentLoaded',function(){
-	populateCards();
+	refresh();
 })
