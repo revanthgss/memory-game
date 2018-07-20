@@ -1,14 +1,21 @@
-/*
- * Create a list that holds all of your cards
- */
+/***************************************************************/
+/*********************Variable Declarations*********************/
+/***************************************************************/
 
+let cardNames=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
+let activeCards=[];
+let starCount=3;
+let moves=0;
+let time=0;
+let start=true;
 
-/*
- * Display the cards on the page
- *   - shuffle the list of cards using the provided "shuffle" method below
- *   - loop through each card and create its HTML
- *   - add each card's HTML to the page
- */
+deck=document.querySelector('.deck');
+restartbtn=document.querySelector('.restart');
+buttons=document.querySelector('.button-wrapper');
+
+/***************************************************************/
+/********************Function Declarations**********************/
+/***************************************************************/
 
 // Shuffle function from http://stackoverflow.com/a/2450976
 function shuffle(array) {
@@ -25,29 +32,7 @@ function shuffle(array) {
     return array;
 }
 
-
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
-
-let cardNames=["fa-diamond","fa-paper-plane-o","fa-anchor","fa-bolt","fa-cube","fa-leaf","fa-bomb","fa-bicycle"]
-let activeCards=[];
-let starCount=3;
-let moves=0;
-let time=0;
-let start=true;
-
-deck=document.querySelector('.deck');
-restartbtn=document.querySelector('.restart');
-buttons=document.querySelector('.button-wrapper');
-
+//Resets the state of game
 function refresh() {
 	moves=0;
 	time=0;
@@ -65,6 +50,7 @@ function refresh() {
 	}
 }
 
+//Starts and increments the timer after every second
 function startTimer(){
 	time++;
 	timer=document.querySelector('.timer');
@@ -72,14 +58,17 @@ function startTimer(){
 	timerId=setTimeout(startTimer,1000);
 }
 
+//Flips the card
 function displayCard(evt){
 	evt.target.classList.add('open');
 }
 
+//Add card to list of active cards
 function appendToOpenCard(evt){	
 	activeCards.push(evt.target.firstChild.classList[1]);
 }
 
+//Add match to active cards if they are matched
 function matched(){
 	cards=document.querySelectorAll('.card');
 	for(let card of cards){
@@ -90,6 +79,7 @@ function matched(){
 	activeCards=[];
 }
 
+//Close the cards if they are not matched
 function notMatched(){
 	cards=document.querySelectorAll('.card');
 	for(let card of cards){
@@ -104,6 +94,7 @@ function notMatched(){
 	activeCards=[];
 }
 
+//Returns true if all cards are matched
 function allMatch(){
 	cards=document.querySelectorAll('.card');
 	for(let card of cards){
@@ -113,6 +104,7 @@ function allMatch(){
 	return true;
 }
 
+//Increase number of moves by 1
 function incrementMoves(){
 	moveSpans=document.querySelectorAll('.moves');
 	let moves=parseInt(moveSpans[0].textContent);
@@ -122,6 +114,7 @@ function incrementMoves(){
 	return moves;
 }
 
+//Deletes a star according to moves
 function removeStar(moves){
 	stars=document.querySelector('.stars');
 	starCount--;
@@ -133,18 +126,19 @@ function removeStar(moves){
 	stars.children[i].style.color='white';
 }
 
+//Display modal after all cards are matched
 function displayModal(){
-	if(allMatch()){
-		clearTimeout(timerId)
-		document.querySelector('.modal-content').innerHTML=`
-			<h3>Congratulations!!!</h3>
-			<p>You won in ${moves} moves with ${starCount} stars.</p> 
-			<p>and you took ${time} seconds</p>`;
-		document.querySelector('.modal').style.display='block';
-	}
+	clearTimeout(timerId)
+	document.querySelector('.modal-content').innerHTML=`
+		<h3>Congratulations!!!</h3>
+		<p>You won in ${moves} moves with ${starCount} stars.</p> 
+		<p>and you took ${time} seconds</p>`;
+	document.querySelector('.modal').style.display='block';
 }
 
+//Event handler to handle click event of a card
 function cardClicked(evt){
+	//If game has started, start the timer
 	if(start){
 		start=false;
 		startTimer();
@@ -152,23 +146,34 @@ function cardClicked(evt){
 	if(evt.target.classList.contains('card')&&!evt.target.classList.contains('open')){
 		displayCard(evt);
 		appendToOpenCard(evt);
+		//Check if there are two cards active
 		if(activeCards.length==2){
+			//If matched
 			if(activeCards[0]===activeCards[1])
 				setTimeout(matched,500);
+			//If not matched
 			else
 				setTimeout(notMatched,500);
 			moves=incrementMoves();
+			//remove stars at certain moves
 			if(moves==14||moves==20)
 				removeStar(moves);
 		}
-		setTimeout(displayModal,600)
+		if(allMatch())
+			setTimeout(displayModal,600);
 	}
 }
 
+/*****************************************************/
+/*******************Event listeners*******************/
+/*****************************************************/
+
+//Initialise game after dom is loaded
 document.addEventListener('DOMContentLoaded',refresh);
 
 deck.addEventListener('click', cardClicked);
 
+//Event listeners to Try Again buttons
 buttons.addEventListener('click',function(evt){
 	if(evt.target.classList.contains('button')){
 		document.querySelector('.modal').style.display='none';
@@ -179,6 +184,7 @@ buttons.addEventListener('click',function(evt){
 	}
 })
 
+//Restart the game when restart button is clicked
 restartbtn.addEventListener('click',function(){
 	clearTimeout(timerId);
 	refresh();
