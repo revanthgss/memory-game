@@ -45,11 +45,13 @@ let time=0;
 let start=true;
 
 deck=document.querySelector('.deck');
+restartbtn=document.querySelector('.restart');
+buttons=document.querySelector('.button-wrapper');
 
 function refresh() {
 	moves=0;
 	time=0;
-	start=true
+	start=true;
 	stars=document.querySelector('.stars');
 	for(let star of stars.children){
 		star.style.color='black';
@@ -131,7 +133,18 @@ function removeStar(moves){
 	stars.children[i].style.color='white';
 }
 
-deck.addEventListener('click', function(evt){
+function displayModal(){
+	if(allMatch()){
+		clearTimeout(timerId)
+		document.querySelector('.modal-content').innerHTML=`
+			<h3>Congratulations!!!</h3>
+			<p>You won in ${moves} moves with ${starCount} stars.</p> 
+			<p>and you took ${time} seconds</p>`;
+		document.querySelector('.modal').style.display='block';
+	}
+}
+
+function cardClicked(evt){
 	if(start){
 		start=false;
 		startTimer();
@@ -148,34 +161,25 @@ deck.addEventListener('click', function(evt){
 			if(moves==14||moves==20)
 				removeStar(moves);
 		}
-		setTimeout(function(){
-			if(allMatch()){
-				clearTimeout(timerId)
-				document.querySelector('.modal-content').innerHTML=`
-					<h3>Congratulations!!!</h3>
-					<p>You won in ${moves} moves with ${starCount} stars.</p> 
-					<p>and you took ${time} seconds</p>`;
-				document.querySelector('.modal').style.display='block';
-			}
-		},600)
+		setTimeout(displayModal,600)
 	}
-})
+}
 
-buttons=document.querySelector('.button-wrapper');
+document.addEventListener('DOMContentLoaded',refresh);
+
+deck.addEventListener('click', cardClicked);
+
 buttons.addEventListener('click',function(evt){
 	if(evt.target.classList.contains('button')){
 		document.querySelector('.modal').style.display='none';
-		if(evt.target.textContent==='YES')
+		if(evt.target.textContent==='YES'){
+			clearTimeout(timerId);
 			refresh();
+		}
 	}
-
 })
 
-restartbtn=document.querySelector('.restart');
-restartbtn.addEventListener('click',refresh)
-
-
-
-document.addEventListener('DOMContentLoaded',function(){
+restartbtn.addEventListener('click',function(){
+	clearTimeout(timerId);
 	refresh();
 })
