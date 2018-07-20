@@ -128,12 +128,14 @@ function removeStar(moves){
 
 //Display modal after all cards are matched
 function displayModal(){
-	clearTimeout(timerId)
-	document.querySelector('.modal-content').innerHTML=`
-		<h3>Congratulations!!!</h3>
-		<p>You won in ${moves} moves with ${starCount} stars.</p> 
-		<p>and you took ${time} seconds</p>`;
-	document.querySelector('.modal').style.display='block';
+	if(allMatch()){
+		clearTimeout(timerId)
+		document.querySelector('.modal-content').innerHTML=`
+			<h3>Congratulations!!!</h3>
+			<p>You won in ${moves} moves with ${starCount} stars.</p> 
+			<p>and you took ${time} seconds</p>`;
+		document.querySelector('.modal').style.display='block';
+	}
 }
 
 //Event handler to handle click event of a card
@@ -159,8 +161,7 @@ function cardClicked(evt){
 			if(moves==14||moves==20)
 				removeStar(moves);
 		}
-		if(allMatch())
-			setTimeout(displayModal,600);
+		setTimeout(displayModal,600);
 	}
 }
 
